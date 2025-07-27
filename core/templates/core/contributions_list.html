@@ -8,8 +8,8 @@
     Liste des Contributeurs pour : <span class="text-purple-700">{{ projet.titre }}</span>
   </h2>
   <div class="mb-6 p-4 bg-gray-100 rounded-lg shadow text-sm text-gray-700">
-    <p><strong>Montant objectif :</strong> {{ projet.montant_objectif|floatformat:2 }} FC</p>
-    <p><strong>Montant récolté :</strong> {{ projet.montant_recolte_effectif }} FC</p>
+    <p><strong>Montant objectif :</strong> {{ projet.montant_objectif|floatformat:2 }} $</p>
+    <p><strong>Montant récolté :</strong> {{ projet.montant_recolte_effectif }} $</p>
     <p><strong>Progression :</strong> 
         {% if projet.montant_objectif > 0 %}
         {{ projet.montant_recolte_effectif|percent:projet.montant_objectif|floatformat:2 }} %
