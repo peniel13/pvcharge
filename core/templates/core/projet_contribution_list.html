@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div id="projets" class="container mx-auto px-4 py-8">
+  <h2 class="text-2xl font-bold mb-6 text-gray-800">{{ title }}</h2>
+
+  {% if projets %}
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for projet in projets %}
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition transform duration-300 hover:scale-105 p-4">
+
+            {% if projet.video %}
+  <a href="{% url 'projet_contribution_detail' projet.id %}">
+    <video class="w-full h-48 object-cover hover:opacity-90 transition duration-200 rounded" autoplay muted loop playsinline>
+      <source src="{{ projet.video.url }}" type="video/mp4">
+      Votre navigateur ne supporte pas les vidéos HTML5.
+    </video>
+  </a>
+{% elif projet.image %}
+  <a href="{% url 'projet_contribution_detail' projet.id %}">
+    <img src="{{ projet.image.url }}" alt="{{ projet.titre }}" class="w-full h-48 object-cover hover:opacity-90 transition duration-200 rounded">
+  </a>
+{% endif %}
+
+          
+
+          <div class="p-4">
+            <h3 class="text-xl font-semibold mb-2">{{ projet.titre }}</h3>
+            <p class="text-sm text-gray-600 mb-3">
+              {{ projet.description|truncatechars:100 }}
+            </p>
+            <div class="mb-2 text-sm text-gray-700">
+                <strong>Montant attendu :</strong>
+                <span class="text-green-600 font-semibold">{{ projet.montant_objectif }} $</span> /
+               
+              </div>
+            <div class="mb-2 text-sm text-gray-700">
+              <strong>Montant récolté :</strong>
+              <span class="text-green-600 font-semibold">{{ projet.montant_recolte_effectif|floatformat:2 }} $</span> /
+              <span class="text-gray-800">{{ projet.montant_objectif }} $</span>
+            </div>
+
+            {% if projet.en_cours and not projet.objectif_atteint %}
+            <a href="{% url 'contribution_create' projet.id %}" class="inline-block mt-2 w-full text-center px-4 py-2 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition">
+              Contribuer
+            </a>
+          {% else %}
+            <div class="mt-2 w-full text-center px-4 py-2 bg-gray-400 text-white font-semibold rounded cursor-not-allowed">
+              Contribution close
+            </div>
+          {% endif %}
+          
+
+            <a href="{% url 'contributions_for_projet' projet.id %}" class="inline-block mt-3 text-sm text-blue-600 hover:underline">
+              🧾 Voir les contributions
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    {% if projets.has_other_pages %}
+<div class="mt-8">
+  <nav aria-label="Pagination des projets" class="flex justify-center">
+    <ul class="flex space-x-4">
+      {% if projets.has_previous %}
+        <li>
+          <a href="?page=1#projets" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">&laquo; Première</a>
+        </li>
+        <li>
+          <a href="?page={{ projets.previous_page_number }}#projets" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">&lt;</a>
+        </li>
+      {% endif %}
+
+      <li>
+        <span class="px-4 py-2 bg-purple-600 text-white rounded-lg">{{ projets.number }}</span>
+      </li>
+
+      {% if projets.has_next %}
+        <li>
+          <a href="?page={{ projets.next_page_number }}#projets" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">&gt;</a>
+        </li>
+        <li>
+          <a href="?page={{ projets.paginator.num_pages }}#projets" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">Dernière &raquo;</a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+{% endif %}
+
+  {% else %}
+    <p class="text-gray-600">Aucun projet trouvé.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

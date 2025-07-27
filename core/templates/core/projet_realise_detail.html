@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<section class="">
+  <div class="container max-w-xl p-6 mx-auto space-y-12 lg:px-8 lg:max-w-7xl">
+    <div>
+      <h2 class="text-3xl font-bold text-center sm:text-5xl">{{ projet.titre }}</h2>
+      <p class="max-w-3xl mx-auto mt-4 text-xl text-center">{{ projet.description }}</p>
+    </div>
+
+    <div class="grid lg:gap-8 lg:grid-cols-2 lg:items-center">
+      <!-- Partie gauche : texte descriptif -->
+      <div>
+        <div class="mt-4 space-y-8">
+          {% if projet.ville %}
+          <div class="flex items-start gap-4">
+            <div class="flex items-center justify-center w-12 h-12 rounded-md">
+              <i class="bx bx-map text-2xl text-purple-600"></i>
+            </div>
+            <div>
+              <h4 class="text-lg font-medium">Ville</h4>
+              <p>{{ projet.ville.name }}  🎉 merci merci à vous</p>
+            </div>
+          </div>
+          {% endif %}
+
+          {% if projet.commune %}
+          <div class="flex items-start gap-4">
+            <div class="flex items-center justify-center w-12 h-12 rounded-md">
+              <i class="bx bx-map-pin text-2xl text-purple-600"></i>
+            </div>
+            <div>
+              <h4 class="text-lg font-medium">Commune</h4>
+              <p>{{ projet.commune.name }}  🎉 merci merci à vous</p>
+            </div>
+          </div>
+          {% endif %}
+
+          {% if projet.contree %}
+          <div class="flex items-start gap-4">
+            <div class="flex items-center justify-center w-12 h-12 rounded-md">
+              <i class="bx bx-compass text-2xl text-purple-600"></i>
+            </div>
+            <div>
+              <h4 class="text-lg font-medium">Contrée</h4>
+              <p>{{ projet.contree.name }}  🎉 merci à vous</p>
+            </div>
+          </div>
+          {% endif %}
+
+          <div class="flex items-start gap-4">
+            <div class="flex items-center justify-center w-12 h-12 rounded-md">
+              <i class="bx bx-calendar text-2xl text-purple-600"></i>
+            </div>
+            <div>
+              <h4 class="text-lg font-medium">Date de réalisation</h4>
+              <p>{{ projet.created_at|date:"d F Y" }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Partie droite : média -->
+      <div aria-hidden="true" class="mt-10 lg:mt-0">
+        {% if projet.video %}
+          <video class="w-full h-auto rounded-lg shadow-lg" autoplay muted loop playsinline controls>
+            <source src="{{ projet.video.url }}" type="video/mp4">
+            Votre navigateur ne supporte pas les vidéos HTML5.
+          </video>
+        {% elif projet.image %}
+          <img src="{{ projet.image.url }}" alt="{{ projet.titre }}" class="mx-auto rounded-lg shadow-lg dark-bg-gray-500">
+        {% else %}
+          <p class="text-center text-gray-500">Aucune image ni vidéo disponible.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

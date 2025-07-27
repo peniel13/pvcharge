@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section 
+  class="relative bg-cover bg-center bg-no-repeat py-16 px-4 sm:px-6 lg:px-8"
+  style="background-image: url('{% static "img/drap.jpg" %}');"
+>
+  <!-- Overlay blanc semi-transparent -->
+  <div class="absolute inset-0 bg-white bg-opacity-80"></div>
+
+  <!-- Contenu avec position relative pour être au-dessus de l'overlay -->
+  <div class="relative max-w-5xl mx-auto">
+    <h1 class="text-4xl font-bold text-gray-900 text-center mb-8">
+      « PRENEZ VOUS EN CHARGE » : Une initiative citoyenne pour des projets concrets
+    </h1>
+
+    <div class="text-lg text-gray-700 space-y-6">
+      <p>
+        Agir ensemble pour des projets concrets, dès maintenant. Et si les citoyens devenaient les premiers moteurs du changement ?
+        <strong>PRENEZ VOUS EN CHARGE</strong> est une plateforme de <strong>contribution sociale</strong> qui vous permet de soutenir des projets à impact direct dans vos <strong>quartiers</strong>, <strong>communes</strong> ou <strong>villes</strong> – sans attendre.
+      </p>
+
+      <p>
+        <strong>Transports, l'eau, poubelles publiques, éclairage public...</strong> Ensemble, finançons ce qui compte vraiment, là où ça compte. Cette initiative citoyenne se veut <strong>complémentaire au pouvoir central</strong>, sans confrontation, mais avec ambition : celle de construire un <strong>avenir plus solidaire et efficace</strong>.
+      </p>
+
+      <p>
+        Nous sommes une <strong>ONG structurée</strong> présente dans plusieurs villes, communes et quartiers à travers nos représentants locaux. Régulièrement, nous organisons des réunions citoyennes ouvertes à toutes et à tous. Lors de ces rencontres, les habitants peuvent nous soumettre des idées de projets de contribution à réaliser ensemble, dans un esprit d'<strong>écoute, de transparence et de mobilisation collective</strong>. Nos équipes se chargent ensuite de <strong>sensibiliser</strong>, <strong>étudier la faisabilité</strong> et <strong>lancer les campagnes</strong> nécessaires à leur concrétisation.
+      </p>
+
+      <p>
+        À travers notre plateforme, vous pouvez explorer des projets à soutenir par <a href="{% url 'city_list' %}" class="text-blue-600 hover:underline">ville</a>, <a href="{% url 'projet_contribution_list' %}" class="text-blue-600 hover:underline">projets en cours</a>, ou encore consulter les <a href="{% url 'projets_realises_list' %}" class="text-blue-600 hover:underline">projets déjà réalisés</a>.
+      </p>
+
+      <p>
+        <strong>Transparence</strong>, <strong>proximité</strong>, <strong>rapidité</strong> : chaque franc récolté est <strong>visible</strong>, <strong>traçable</strong> et <strong>utile</strong>. Parce qu’agir, c’est aussi notre <strong>responsabilité collective</strong>.
+      </p>
+
+      <p class="italic text-gray-600 border-l-4 border-indigo-600 pl-4">
+        « Une route réparée, une école réhabilitée, une contrée éclairée : chaque contribution citoyenne change réellement les choses. »
+      </p>
+
+      <p>
+        Vous pouvez explorer les statistiques de vos villes et communes, voir les <a href="{% url 'city_list' %}" class="text-blue-600 hover:underline">projets rattachés à chaque zone</a>, et suivre l'évolution des financements en toute transparence.
+      </p>
+
+      <p class="text-center">
+        <a href="{% url 'projet_contribution_list' %}" class="inline-block mt-6 px-6 py-3 bg-indigo-600 text-white font-semibold rounded hover:bg-indigo-700 transition">
+          Contribuer maintenant
+        </a>
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

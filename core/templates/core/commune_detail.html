@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section 
+  class="relative bg-cover bg-center bg-no-repeat py-10 px-4 sm:px-6 lg:px-8"
+  style="background-image: url('{% static "img/drap.jpg" %}');"
+>
+  <!-- ✅ Overlay blanc semi-transparent -->
+  <div class="absolute inset-0 bg-white bg-opacity-80 z-0"></div>
+
+  <!-- ✅ Contenu principal avec z-index supérieur -->
+  <div class="container mx-auto relative z-10">
+
+  <!-- 🔷 En-tête Commune -->
+   
+
+
+<section class="relative bg-cover bg-center h-96 mb-12" style="background-image: url('{% static "img/drap.jpg" %}');">
+  <!-- Overlay sombre -->
+  <div class="absolute inset-0 bg-gray-800 opacity-60"></div>
+
+  <!-- Contenu centré -->
+  <div class="container mx-auto h-full flex items-center justify-center relative z-10 px-4">
+    <div class="text-center text-white">
+      <!-- Titre de la commune -->
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold">
+        Bienvenue à {{ commune.name }}
+      </h1>
+
+      <!-- Statistiques associées -->
+      <p class="text-lg sm:text-2xl mt-4">
+        {% if nb_contrees %}🧭 {{ nb_contrees }} contrée{{ nb_contrees|pluralize }}{% endif %}
+        {% if nb_projets_contribution %} • 💰 {{ nb_projets_contribution }} projet{{ nb_projets_contribution|pluralize }} de contribution {% endif %}
+        {% if nb_projets_realises %} • 🏗️ {{ nb_projets_realises }} projet{{ nb_projets_realises|pluralize }} réalisés{% endif %}
+      </p>
+    </div>
+  </div>
+</section>
+
+
+  <!-- 🔀 Onglets -->
+  <div>
+    <ul class="flex border-b mb-6">
+        <li class="-mb-px mr-1">
+          <button class="tab-button bg-white inline-block py-2 px-4 text-blue-600 font-semibold border-l border-t border-r rounded-t active" data-tab="contrees">
+            🏞️ Contrées ({{ contrees|length }})
+          </button>
+        </li>
+        <li class="mr-1">
+          <button class="tab-button bg-white inline-block py-2 px-4 text-blue-600 font-semibold border-l border-t border-r rounded-t" data-tab="projets">
+            🏗️ Réalisations ({{ projets|length }})
+          </button>
+        </li>
+        <li>
+          <button class="tab-button bg-white inline-block py-2 px-4 text-blue-600 font-semibold border-l border-t border-r rounded-t" data-tab="contributions">
+            🤝 Contributions ({{ projets_contribution|length }})
+          </button>
+        </li>
+      </ul>
+      
+
+    <!-- 🏞️ Contrées -->
+    <div class="tab-content" id="contrees">
+        <div class="grid md:grid-cols-3 sm:grid-cols-2 gap-6">
+          {% for contree in contrees %}
+            <a href="{% url 'contree_detail' contree.id %}" class="block p-4 bg-white rounded-lg shadow hover:shadow-lg transition">
+              <h3 class="text-lg font-bold text-blue-600">{{ contree.name }}</h3>
+              <p class="text-sm text-gray-700">🏗️ {{ contree.nb_projets_realises }} projet{{ contree.nb_projets_realises|pluralize }} réalisés</p>
+              <p class="text-sm text-gray-700 mb-2">💰 {{ contree.nb_projets_contribution }} projet{{ contree.nb_projets_contribution|pluralize }} en cours</p>
+              <p class="text-gray-500">Voir les détails</p>
+            </a>
+          {% empty %}
+            <p class="text-gray-500">Aucune contrée enregistrée pour cette commune.</p>
+          {% endfor %}
+        </div>
+      </div>
+      
+
+    <!-- 🏗️ Projets réalisés -->
+    <!-- 🏗️ Projets réalisés -->
+<div class="tab-content hidden" id="projets">
+    <div class="grid md:grid-cols-2 gap-6">
+      {% for projet in projets %}
+        <a href="{% url 'projet_realise_detail' projet.id %}" class="block bg-white rounded-lg shadow hover:shadow-lg transition p-4">
+          {% if projet.video %}
+            <video class="w-full h-48 object-cover rounded mb-4" autoplay muted loop playsinline>
+              <source src="{{ projet.video.url }}" type="video/mp4">
+              Votre navigateur ne supporte pas les vidéos HTML5.
+            </video>
+          {% elif projet.image %}
+            <img src="{{ projet.image.url }}" alt="{{ projet.titre }}" class="w-full h-48 object-cover rounded mb-4">
+          {% endif %}
+          <h3 class="text-lg font-bold text-green-700">{{ projet.titre }}</h3>
+          <p class="text-sm text-gray-600 mt-2">{{ projet.description|truncatechars:100 }}</p>
+        </a>
+      {% empty %}
+        <p class="text-gray-500">Aucun projet réalisé dans cette commune.</p>
+      {% endfor %}
+    </div>
+  </div>
+  
+
+    <!-- 🤝 Projets de contribution -->
+    <div class="tab-content hidden" id="contributions">
+        <div class="grid md:grid-cols-2 gap-6">
+          {% for projet in projets_contribution %}
+            <div class="bg-white rounded-lg shadow p-4 transform transition duration-300 hover:scale-105 hover:shadow-lg">
+              <a href="{% url 'projet_contribution_detail' projet.id %}">
+                {% if projet.video %}
+                  <video class="rounded w-full h-48 object-cover mb-3" autoplay muted loop playsinline>
+                    <source src="{{ projet.video.url }}" type="video/mp4">
+                    Votre navigateur ne supporte pas les vidéos HTML5.
+                  </video>
+                {% elif projet.image %}
+                  <img src="{{ projet.image.url }}" class="rounded w-full h-48 object-cover mb-3" alt="{{ projet.titre }}">
+                {% endif %}
+      
+                <h3 class="text-xl font-bold text-purple-700">{{ projet.titre }}</h3>
+                <p class="text-sm text-gray-600 mt-1 mb-3">{{ projet.description|truncatechars:120 }}</p>
+                <p class="text-sm text-gray-800 mb-1"><strong>Objectif :</strong> {{ projet.montant_objectif|floatformat:2 }} FC</p>
+                <p class="text-sm text-gray-800 mb-1"><strong>Collecté :</strong> {{ projet.montant_recolte_effectif|floatformat:2 }} FC</p>
+              </a>
+      
+              <div class="mt-2 flex items-center flex-wrap gap-2">
+                {% if projet.en_cours and not projet.objectif_atteint %}
+                  <a href="{% url 'contribution_create' projet.id %}" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm">
+                    Contribuer
+                  </a>
+                {% else %}
+                  <span class="text-red-500 font-semibold text-sm">Contribution clôturée</span>
+                {% endif %}
+      
+                <a href="{% url 'contributions_for_projet' projet.id %}" class="text-blue-500 text-sm hover:underline">
+                  Voir les contributions
+                </a>
+              </div>
+            </div>
+          {% empty %}
+            <p class="text-gray-500">Aucun projet de contribution dans cette contrée.</p>
+          {% endfor %}
+        </div>
+      </div>
+      
+      </div>
+    </div>
+  </div>
+
+</div>
+</section>
+<!-- ✅ Script Tabs -->
+<script>
+  const tabs = document.querySelectorAll(".tab-button");
+  const contents = document.querySelectorAll(".tab-content");
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      tabs.forEach(t => t.classList.remove("active", "bg-gray-100"));
+      tab.classList.add("active", "bg-gray-100");
+
+      contents.forEach(c => c.classList.add("hidden"));
+      document.getElementById(tab.dataset.tab).classList.remove("hidden");
+    });
+  });
+</script>
+{% endblock %}

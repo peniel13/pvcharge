@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div id="projets" class="container mx-auto px-4 py-8">
+  <h2 class="text-2xl font-bold mb-6 text-gray-800">{{ title }}</h2>
+
+  {% if projets %}
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for projet in projets %}
+      <a href="{% url 'projet_realise_detail' projet.id %}" class="block transform transition duration-300 hover:scale-105 hover:shadow-lg">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden p-4 h-full flex flex-col">
+
+          {% if projet.video %}
+            <video class="w-full h-48 object-cover rounded mb-4" autoplay muted loop playsinline>
+              <source src="{{ projet.video.url }}" type="video/mp4">
+              Votre navigateur ne supporte pas les vidéos HTML5.
+            </video>
+          {% elif projet.image %}
+            <img src="{{ projet.image.url }}" alt="{{ projet.titre }}" class="w-full h-48 object-cover rounded mb-4">
+          {% endif %}
+
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ projet.titre }}</h3>
+          <p class="text-gray-600 text-sm mb-4">{{ projet.description|truncatechars:100 }}</p>
+
+          {% if projet.ville or projet.commune or projet.contree %}
+            <span class="text-sm text-gray-500 mt-auto">
+              📍 
+              {% if projet.ville %}{{ projet.ville.name }} {% endif %}
+              {% if projet.commune %}- {{ projet.commune.name }} {% endif %}
+              {% if projet.contree %}- {{ projet.contree.name }}{% endif %}
+            </span>
+          {% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+    {% if projets.has_other_pages %}
+    <div class="mt-8">
+      <nav aria-label="Pagination" class="flex justify-center">
+        <ul class="flex space-x-4">
+          {% if projets.has_previous %}
+          <li><a href="?page=1#projets" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">&laquo; Première</a></li>
+          <li><a href="?page={{ projets.previous_page_number }}#projets" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">&lt;</a></li>
+          {% endif %}
+
+          <li><span class="px-4 py-2 bg-purple-600 text-white rounded">{{ projets.number }}</span></li>
+
+          {% if projets.has_next %}
+          <li><a href="?page={{ projets.next_page_number }}#projets" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">&gt;</a></li>
+          <li><a href="?page={{ projets.paginator.num_pages }}#projets" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">Dernière &raquo;</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+    {% endif %}
+
+  {% else %}
+    <p class="text-gray-600">Aucun projet réalisé trouvé.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-10 max-w-3xl">
+  <!-- Titre du projet -->
+  <h1 class="text-3xl font-bold text-gray-800 mb-4 text-center">
+    {{ projet.titre }}
+  </h1>
+
+  <!-- Statut -->
+  <p class="text-center mb-6">
+    {% if objectif_atteint %}
+      <span class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
+        ✅ Objectif atteint 🎉
+      </span>
+    {% elif projet.en_cours %}
+      <span class="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
+        En cours de contribution
+      </span>
+    {% else %}
+      <span class="inline-block bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
+        Contribution clôturée
+      </span>
+    {% endif %}
+  </p>
+
+  <!-- Infos -->
+  <div class="mb-6 p-4 bg-gray-100 rounded-lg shadow text-sm text-gray-700">
+    <p><strong>Montant objectif :</strong> {{ projet.montant_objectif|floatformat:2 }} $</p>
+    <p><strong>Montant récolté :</strong> {{ montant_recolte_effectif|floatformat:2 }} $</p>
+    <p><strong>Progression :</strong> 
+      {% if projet.montant_objectif > 0 %}
+        {{ montant_recolte_effectif|percent:projet.montant_objectif|floatformat:2 }} %
+      {% else %}
+        N/A
+      {% endif %}
+    </p>
+
+    <!-- ✅ Barre de progression graphique -->
+    {% if projet.montant_objectif > 0 %}
+      {% with pourcentage=montant_recolte_effectif|percent:projet.montant_objectif|floatformat:2 %}
+        <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden mt-2">
+          <div class="bg-purple-600 h-full text-xs text-white text-center" style="width: {{ pourcentage }}%">
+            {{ pourcentage }}%
+          </div>
+        </div>
+      {% endwith %}
+    {% else %}
+      <p class="text-sm text-gray-500 italic">Objectif non défini</p>
+    {% endif %}
+  </div>
+  <div class="flex justify-center gap-4">
+    {% if projet.en_cours and not objectif_atteint %}
+      <a href="{% url 'contribution_create' projet.id %}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-semibold transition">
+        Contribuer maintenant
+      </a>
+    {% endif %}
+
+    <a href="{% url 'contributions_for_projet' projet.id %}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-md font-semibold transition">
+      Voir les contributions
+    </a>
+  </div>
+</div>
+  <!-- Description -->
+  <section class="bg-white py-12">
+    <div class="container max-w-xl p-6 mx-auto space-y-12 lg:px-8 lg:max-w-7xl">
+      <!-- Titre + description -->
+      <div>
+        <h2 class="text-3xl font-bold text-center sm:text-5xl">{{ projet.titre }}</h2>
+        <p class="max-w-3xl mx-auto mt-4 text-xl text-center text-gray-700">
+          {{ projet.description|linebreaks }}
+        </p>
+      </div>
+  
+      <!-- Contenu 2 colonnes -->
+      <div class="grid lg:gap-8 lg:grid-cols-2 lg:items-center">
+        <!-- 📍 Informations -->
+        <div>
+          <div class="mt-4 space-y-6 text-gray-800">
+            {% if projet.ville %}
+              <div class="flex items-start gap-3">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-green-100 text-green-600">
+                  <i class="fas fa-city"></i>
+                </div>
+                <div>
+                  <h4 class="text-lg font-semibold">Ville</h4>
+                  <p>{{ projet.ville.name }} 🎉 merci a vous</p>
+                </div>
+              </div>
+            {% endif %}
+            {% if projet.commune %}
+              <div class="flex items-start gap-3">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-600">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                  <h4 class="text-lg font-semibold">Commune</h4>
+                  <p>{{ projet.commune.name }} 🎉 merci a vous</p>
+                </div>
+              </div>
+            {% endif %}
+            {% if projet.contree %}
+              <div class="flex items-start gap-3">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-purple-100 text-purple-600">
+                  <i class="fas fa-tree"></i>
+                </div>
+                <div>
+                  <h4 class="text-lg font-semibold">Contrée</h4>
+                  <p>{{ projet.contree.name }}  🎉 merci a vous</p>
+                </div>
+              </div>
+            {% endif %}
+            <div class="flex items-start gap-3">
+              <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-800">
+                <i class="fas fa-calendar-alt"></i>
+              </div>
+              <div>
+                <h4 class="text-lg font-semibold">Date</h4>
+                <p>{{ projet.created_at|date:"d M Y" }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- 🖼️ Média -->
+        <div aria-hidden="true" class="mt-10 lg:mt-0">
+          {% if projet.video %}
+            <video class="w-full rounded-lg shadow-lg" autoplay muted loop controls playsinline>
+              <source src="{{ projet.video.url }}" type="video/mp4">
+              Votre navigateur ne supporte pas la lecture de vidéos.
+            </video>
+          {% elif projet.image %}
+            <img src="{{ projet.image.url }}" alt="{{ projet.titre }}" class="w-full rounded-lg shadow-lg">
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+  
+
+  <!-- Actions -->
+  
+
+{% endblock %}
